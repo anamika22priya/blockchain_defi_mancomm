@@ -35,7 +35,7 @@ This helps in keeping a fool-proof record of custody.
 - The only cost we need to incur is the operational cost of Fabric.
 
 ### OVERALL ARCHITECTURE: 
-![Overall architecture](images/overall architecture.png)
+![Overall architecture](images/overall_architecture.png)
 
 ### WORKFLOW
 
