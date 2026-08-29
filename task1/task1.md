@@ -117,6 +117,64 @@ This helps in keeping a fool-proof record of custody.
 5. If one node becomes unavailable or experiences a failure, other nodes continue to maintain the same ledger.
 
 ### Infrastructure cost: 
+1. Participating organizations still need to operate blockchain nodes and supporting infrastructure.
+2. This can involve significant setup and maintenance costs.
+3. Skilled maintenance staff is required. 
+4. Mitigation: 
+ - Begin with a limited consortium of important organizations.
+ - Avoid deploying nodes everywhere immediately.
+ - Need to consider using cloud infrastricture. 
+
+### Complexity: 
+1. A normal database is simple. Application -> Database
+2. This application has several layers added.And it requires Blockchain engineers, infrastructure administrators, security specialists, identity management, network governance. 
+3. Mitigation: 
+ - Use established Fabric components. 
+ - Gradual deployment. 
+
+### Blockchain cannot guarantee if whether the original evidence uploaded was honest. 
+1. Mitigation: 
+ - Use proper forensic procedures.
+ - Use secure evidence acquisition.
+ - Perform verification before evidence is registered.
+
+### Off-Chain Storage is still a vulnerability: 
+1. If the storage server is hacked or the video is deleted, blockchain cannot recover the original video.
+2. Mitigation: 
+ - Encrypted storage
+ - Multiple backups
+ - Geographic redundancy
+ - Access controls
+ - Disaster recovery
+ - Integrity monitoring
+
+### Immutability can become a problem: 
+1. If an investigator may accidentally record the wrong evidence hash.
+2. The original blockchain record cannot simply be deleted.
+3. Mitigation: 
+ - Use corrective transactions rather than deleting history.
+
+### Scalability: 
+1. A large country like India could generate an enormous amount of digital evidence.
+2. Recording every small interaction as a blockchain transaction could heavily load the network.
+3. Mitigation: 
+ - Record only important state-changing events on-chain.
+ - Do not record every tiny interaction.
+
+### Institutional resistance to adoption: 
+1. Existing departments may have established workflows, databases, and approval procedures. Replacing or integrating these systems can face organizational resistance.
+2. Implementation costs: Even without cryptocurrency or gas fees, the government still needs to invest in infrastructure, training, maintenance, cybersecurity, and integration with existing systems.
+3. Instituional cooperation between police departments, forensic labs, courts etc., would need to agree on common standards. 
+
+
+
+
+ 
+
+
+
+
+
 
 
 
