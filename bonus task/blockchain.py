@@ -67,25 +67,23 @@ class Blockchain:
 
         return True
 
-            
-my_blockchain=Blockchain() #create the block chain wiht genesis block
+  # testing code:          
+    # my_blockchain.add_transaction("Alice", "Bob", 10)
+    # my_blockchain.add_transaction("Bob", "Charlie", 5)
 
-my_blockchain.add_transaction("Alice", "Bob", 10)
-my_blockchain.add_transaction("Bob", "Charlie", 5)
+    # my_blockchain.mine_pending_transactions()
 
-my_blockchain.mine_pending_transactions()
+    # print("Blockchain valid:", my_blockchain.is_chain_valid())
 
-print("Blockchain valid:", my_blockchain.is_chain_valid())
+    # my_blockchain.chain[1].data[0]["amount"] = 999
 
-my_blockchain.chain[1].data[0]["amount"] = 999
+    # print("Blockchain valid after tampering:", my_blockchain.is_chain_valid())
 
-print("Blockchain valid after tampering:", my_blockchain.is_chain_valid())
-
-for block in my_blockchain.chain: #print the all blocks attributes of the blocks in the blockchain
-    print("Timestamp:", block.timestamp)
-    print("Data:", block.data)
-    print("Previous Hash:", block.previous_hash)
-    print("Nonce:",block.nonce)
-    print("Hash:", block.hash)
-    print( )
-    
+    # for block in my_blockchain.chain: #print the all blocks attributes of the blocks in the blockchain
+    #     print("Timestamp:", block.timestamp)
+    #     print("Data:", block.data)
+    #     print("Previous Hash:", block.previous_hash)
+    #     print("Nonce:",block.nonce)
+    #     print("Hash:", block.hash)
+    #     print( )
+        
