@@ -1,0 +1,322 @@
+body {
+
+    background-color: #08111f;
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    text-align: center;
+
+    padding: 30px;
+
+}
+
+
+/* TITLE */
+
+h1 {
+
+    color: #38bdf8;
+
+    font-size: 40px;
+
+    margin-bottom: 5px;
+
+}
+
+
+body > p {
+
+    color: #94a3b8;
+
+    margin-bottom: 30px;
+
+}
+
+
+/* PLAYER STATS */
+
+#stats {
+
+    display: flex;
+
+    justify-content: space-around;
+
+    gap: 15px;
+
+    background-color: #10243b;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+}
+
+
+.stat {
+
+    flex: 1;
+
+}
+
+
+.stat h3 {
+
+    margin-bottom: 5px;
+
+}
+
+
+.stat p {
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+}
+
+
+/* TOLL BOOTH */
+
+#toll-booth {
+
+    background-color: #10243b;
+
+    margin-top: 30px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+}
+
+
+#road {
+
+    background-color: #1b2738;
+
+    height: 180px;
+
+    border-radius: 10px;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+/* ROAD MARKINGS */
+
+#road::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    right: 0;
+
+    top: 50%;
+
+    border-top: 3px dashed #64748b;
+
+}
+
+
+/* CAR */
+
+#car {
+
+    font-size: 60px;
+
+    position: absolute;
+
+    bottom: 40px;
+
+    left: 40px;
+
+}
+
+
+/* TRANSACTION PANEL */
+
+#transaction-panel {
+
+    background-color: #10243b;
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 12px;
+
+    text-align: left;
+
+}
+
+
+/* TRANSACTION DETAILS */
+
+#transaction-details {
+
+    background-color: #0b1829;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* CHECK SECTIONS */
+
+#signature-check,
+#balance-check,
+#contract-check,
+#final-decision {
+
+    background-color: #0b1829;
+
+    padding: 15px;
+
+    margin-top: 15px;
+
+    border-radius: 10px;
+
+}
+
+
+#signature-check h3 {
+
+    color: #a78bfa;
+
+}
+
+
+#balance-check h3 {
+
+    color: #4ade80;
+
+}
+
+
+#contract-check h3 {
+
+    color: #facc15;
+
+}
+
+
+#final-decision h3 {
+
+    color: #38bdf8;
+
+}
+
+
+/* BUTTONS */
+
+button {
+
+    padding: 12px 20px;
+
+    margin: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+button:hover {
+
+    transform: scale(1.03);
+
+}
+
+
+#signature-valid,
+#balance-sufficient,
+#contract-valid {
+
+    background-color: #4ade80;
+
+}
+
+
+#signature-invalid,
+#balance-insufficient,
+#contract-invalid {
+
+    background-color: #fb7185;
+
+}
+
+
+#approve {
+
+    background-color: #38bdf8;
+
+}
+
+
+#reject {
+
+    background-color: #fb7185;
+
+}
+
+
+/* SELECTED ANSWER */
+
+.selected {
+
+    outline: 3px solid #38bdf8;
+
+    transform: scale(1.03);
+
+}
+
+
+/* VALIDATION REPORT */
+
+#validation-report {
+
+    margin-top: 20px;
+
+    padding: 15px;
+
+    background-color: #111f32;
+
+    border-radius: 10px;
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    #stats {
+
+        flex-direction: column;
+
+    }
+
+    body {
+
+        padding: 15px;
+
+    }
+
+}

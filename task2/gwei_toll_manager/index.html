@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gwei Toll Manager</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+    <h1>GWEI TOLL MANAGER</h1>
+
+    <p>Build. Validate. Survive the Congestion.</p>
+
+
+    <!-- PLAYER STATS -->
+
+    <div id="stats">
+
+        <div class="stat">
+
+            <h3>💰 ETH</h3>
+
+            <p id="eth">1.00</p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>⭐ Reputation</h3>
+
+            <p id="reputation">100</p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>🚗 Processing Capacity</h3>
+
+            <p id="capacity">5 tx/min</p>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>⛽ Base Fee</h3>
+
+            <p id="base-fee">20 gwei</p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TOLL BOOTH -->
+
+    <div id="toll-booth">
+
+        <h2>🚧 YOUR TOLL BOOTH</h2>
+
+        <div id="road">
+
+            <div id="car">
+
+                🚗
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TRANSACTION INSPECTION -->
+
+    <div id="transaction-panel">
+
+        <h2>🔎 TRANSACTION INSPECTION</h2>
+
+
+        <div id="transaction-details">
+
+            Select a car to inspect its transaction.
+
+        </div>
+
+
+
+        <!-- SIGNATURE CHECK -->
+
+        <div id="signature-check">
+
+            <h3>🔐 Signature Check</h3>
+
+            <p>
+                Does the signature match the transaction?
+            </p>
+
+
+            <button id="signature-valid">
+
+                ✅ VALID
+
+            </button>
+
+
+            <button id="signature-invalid">
+
+                ❌ INVALID
+
+            </button>
+
+        </div>
+
+
+
+        <!-- BALANCE CHECK -->
+
+        <div id="balance-check">
+
+            <h3>💰 Balance Check</h3>
+
+            <p>
+                Does the sender have enough ETH?
+            </p>
+
+
+            <button id="balance-sufficient">
+
+                ✅ SUFFICIENT
+
+            </button>
+
+
+            <button id="balance-insufficient">
+
+                ❌ INSUFFICIENT
+
+            </button>
+
+        </div>
+
+
+
+        <!-- CONTRACT CHECK -->
+
+        <div id="contract-check">
+
+            <h3>📜 Contract Check</h3>
+
+            <p>
+                Does the transaction follow the contract rules?
+            </p>
+
+
+            <button id="contract-valid">
+
+                ✅ VALID
+
+            </button>
+
+
+            <button id="contract-invalid">
+
+                ❌ INVALID
+
+            </button>
+
+        </div>
+
+
+
+        <!-- FINAL DECISION -->
+
+        <div id="final-decision">
+
+            <h3>🚦 Final Decision</h3>
+
+            <p>
+                Should this transaction be accepted?
+            </p>
+
+
+            <button id="approve">
+
+                ✅ APPROVE
+
+            </button>
+
+
+            <button id="reject">
+
+                ❌ REJECT
+
+            </button>
+
+        </div>
+
+
+
+        <!-- VALIDATION REPORT -->
+
+        <div id="validation-report">
+
+        </div>
+
+    </div>
+
+
+    <script src="game.js"></script>
+
+</body>
+
+</html>
