@@ -16,208 +16,434 @@
 
 <body>
 
-    <h1>GWEI TOLL MANAGER</h1>
+    <main id="start-screen">
 
-    <p>Build. Validate. Survive the Congestion.</p>
-
-
-    <!-- PLAYER STATS -->
-
-    <div id="stats">
-
-        <div class="stat">
-
-            <h3>💰 ETH</h3>
-
-            <p id="eth">1.00</p>
-
+        <div id="game-label">
+            ◇ VALIDATOR TRAINING SIMULATOR ◇
         </div>
 
+        <h1>
+            GWEI TOLL
+            <span>MANAGER</span> <!--used when u want to style a piece of text differently-->
+        </h1>
 
-        <div class="stat">
+        <p id="tagline">
+            BUILD · VALIDATE · SURVIVE THE CONGESTION
+        </p>
 
-            <h3>⭐ Reputation</h3>
+        <p id="description">
+            You run a one-lane toll booth on a busy
+            blockchain network. Cars arrive carrying
+            transactions. Check the signature, balance
+            and contract rules and then decide whether
+            to approve or reject.
+        </p>
 
-            <p id="reputation">100</p>
+        <button id="start-button">
+            OPEN THE BOOTH
+        </button>
 
+        <div id="game-rule">
+            <div class="rule-card">
+                <div class="rule-number">
+                    CHECK 1
+                </div>
+                
+            
+                <h3>
+                    Signature vs. History 
+                </h3>
+
+            </div>
+        
+
+            <div class="rule-card">
+                <div class="rule-number">
+                    CHECK 2
+                </div> 
+                <h3>
+                    Balance vs. Cost
+                </h3>
+            </div>
+            
+            <div class="rule-card">
+                <div class="rule-number">
+                    CHECK 3
+                </div>
+                <h3>
+                    Contract allow list
+                </h3>
+            </div>
+
+            <div class="rule-card">
+                <div class="rule-number">
+                    ! THE CATCH !
+                </div>
+                <h3>
+                    Save your reputation and complete the level before the clock runs out
+                </h3>
+            </div>
         </div>
+    </main>
 
+    <main id="game-screen">
 
-        <div class="stat">
+        <header id="game-header">
 
-            <h3>🚗 Processing Capacity</h3>
+            <h1>GWEI TOLL MANAGER</h1>
 
-            <p id="capacity">5 tx/min</p>
+            <div id="level-info">
+                ⭐ LEVEL 1
+            </div>
 
-        </div>
+        </header>
 
+        <section id="player-status">
 
-        <div class="stat">
+            <div class="status-card">
 
-            <h3>⛽ Base Fee</h3>
+                <span>BALANCE</span>
 
-            <p id="base-fee">20 gwei</p>
-
-        </div>
-
-    </div>
-
-
-
-    <!-- TOLL BOOTH -->
-
-    <div id="toll-booth">
-
-        <h2>🚧 YOUR TOLL BOOTH</h2>
-
-        <div id="road">
-
-            <div id="car">
-
-                🚗
+                <strong id="eth">
+                    1.000 ETH
+                </strong>
 
             </div>
 
-        </div>
 
+            <div class="status-card">
+
+                <span>REPUTATION</span>
+
+                <strong id="reputation">
+                    100
+                </strong>
+
+            </div>
+
+
+            <div class="status-card">
+
+                <span>LEVEL</span>
+
+                <strong id="capacity">
+                    
+                </strong>
+
+            </div>
+
+
+            <div class="status-card">
+
+                <span>QUOTA</span>
+
+                <strong id="quota">
+                    0 / 8
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- NETWORK MONITOR -->
+
+        <section id="network-monitor">
+
+            <h2>
+                OVERHEAD NETWORK MONITOR
+            </h2>
+
+            <div id="congestion-bar">
+
+                <div id="congestion-level"></div>
+
+            </div>
+
+            <div id="congestion-text">
+
+                CONGESTION
+
+                <span id="congestion-percent">
+                    0%
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- MAIN GAME AREA -->
+        <!--class=status card for the four blocks because one CSS can style all four
+        and use id eg. id="eth","quota", etc for ones that need individually controlling usinf the js -->
+        <section id="game-area">
+
+
+            <!-- LEFT SIDE -->
+
+            <div id="left-column">
+
+
+                <!-- TOLL ROAD -->
+
+                <div id="toll-road">
+
+                    <div id="incoming-car">
+                        🚗
+                    </div>
+
+
+                    <div id="toll-booth">
+                        🚧
+
+                        <span>
+                            TOLL BOOTH
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUEUE -->
+
+                <div id="queue-area">
+
+                    <div class="booth-card">
+                        <!--strong is used for ones that need to be shown in bold-->
+                        <strong>
+                            BOOTH 1
+                        </strong>
+
+                        <span>
+                            (YOU)
+                        </span>
+
+                    </div>
+
+
+                    <div class="booth-card locked">
+
+                        🔒
+
+                        <span>
+                            LOCKED
+                        </span>
+
+                    </div>
+
+
+                    <p id="queue-count">
+                        Queue: 0 waiting
+                    </p>
+
+                </div>
+
+
+               
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div id="right-column">
+
+                 <!-- CONTRACT RULES -->
+
+                <div id="contract-rules">
+
+                    <h2>
+                        📜 CONTRACT RULES — THIS LEVEL
+                    </h2>
+
+
+                    <p>
+                        SENDERS OK:
+                        <span>Alice</span>
+                        <span>Bob</span>
+                        <span>Carol</span>
+                    </p>
+
+
+                    <p>
+                        RECEIVERS OK:
+                        <span>Dave</span>
+                        <span>Eve</span>
+                        <span>DEX Pool</span>
+                    </p>
+
+
+                    <p>
+                        TYPES OK:
+                        <span>Transfer</span>
+                        <span>Swap</span>
+                    </p>
+
+                </div>
+
+
+                <!-- TRANSACTION -->
+
+                <div id="transaction-panel">
+
+                    <div id="transaction-heading">
+
+                        🚙
+
+                        <h2 id="transaction-type">
+                            SWAP
+                        </h2>
+
+                    </div>
+
+
+                    <div id="transaction-timer">
+
+                        <div id="timer-bar"></div>
+
+                        <span id="time-remaining">
+                            25.4s
+                        </span>
+
+                    </div>
+
+
+                    <!-- TRANSACTION DETAILS -->
+
+                    <div id="transaction-details">
+
+    
+
+                    </div>
+
+
+                    <!-- CONTRACT CHECK -->
+
+                    <div class="evidence-card">
+
+                        <h3>
+                            1 · CONTRACT COMPLIANCE
+                        </h3>
+
+                        <p>
+                            Sender / Receiver
+                            <span id="contract-sender-receiver">
+                                —
+                            </span>
+                        </p>
+
+                        <p>
+                            Type requested
+                            <span id="contract-type">
+                                —
+                            </span>
+                        </p>
+
+                    </div>
+
+
+                    <!-- SIGNATURE CHECK -->
+
+                    <div class="evidence-card">
+
+                        <h3>
+                            2 · SIGNATURE HISTORY
+                        </h3>
+
+                        <p>
+                            Sender previously signed for
+                            <span id="signed-amount">
+                                —
+                            </span>
+                        </p>
+
+                        <p>
+                            This transaction claims
+                            <span id="claimed-amount">
+                                —
+                            </span>
+                        </p>
+
+                    </div>
+
+
+                    <!-- BALANCE CHECK -->
+
+                    <div class="evidence-card">
+
+                        <h3>
+                            3 · BALANCE CHECK
+                        </h3>
+
+                        <p>
+                            Sender's balance
+                            <span id="sender-balance">
+                                —
+                            </span>
+                        </p>
+
+                        <p>
+                            Amount + gas cost required
+                            <span id="total-cost">
+                                —
+                            </span>
+                        </p>
+
+                    </div>
+
+
+                    <!-- FINAL DECISION -->
+
+                    <div id="final-decision">
+
+                        <button id="approve">
+
+                            ▲ ACCEPT
+
+                            <small>
+                                raise the barrier
+                            </small>
+
+                        </button>
+
+
+                        <button id="reject">
+
+                            ▼ REJECT
+
+                            <small>
+                                block the car
+                            </small>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+    <div id="result-popup" class="result-popup">
+        <div class="result-box">
+            <h2 id="result-title">
+
+            </h2>
+            <div id="result-reasons">
+
+            </div>
+            <button id="continue-button">
+                CONTINUE
+            </button>
+
+            <button id="restart-button" style="display: none;">
+                RESTART LEVEL
+            </button>
+        </div>
     </div>
 
-
-
-    <!-- TRANSACTION INSPECTION -->
-
-    <div id="transaction-panel">
-
-        <h2>🔎 TRANSACTION INSPECTION</h2>
-
-
-        <div id="transaction-details">
-
-            Select a car to inspect its transaction.
-
-        </div>
-
-
-
-        <!-- SIGNATURE CHECK -->
-
-        <div id="signature-check">
-
-            <h3>🔐 Signature Check</h3>
-
-            <p>
-                Does the signature match the transaction?
-            </p>
-
-
-            <button id="signature-valid">
-
-                ✅ VALID
-
-            </button>
-
-
-            <button id="signature-invalid">
-
-                ❌ INVALID
-
-            </button>
-
-        </div>
-
-
-
-        <!-- BALANCE CHECK -->
-
-        <div id="balance-check">
-
-            <h3>💰 Balance Check</h3>
-
-            <p>
-                Does the sender have enough ETH?
-            </p>
-
-
-            <button id="balance-sufficient">
-
-                ✅ SUFFICIENT
-
-            </button>
-
-
-            <button id="balance-insufficient">
-
-                ❌ INSUFFICIENT
-
-            </button>
-
-        </div>
-
-
-
-        <!-- CONTRACT CHECK -->
-
-        <div id="contract-check">
-
-            <h3>📜 Contract Check</h3>
-
-            <p>
-                Does the transaction follow the contract rules?
-            </p>
-
-
-            <button id="contract-valid">
-
-                ✅ VALID
-
-            </button>
-
-
-            <button id="contract-invalid">
-
-                ❌ INVALID
-
-            </button>
-
-        </div>
-
-
-
-        <!-- FINAL DECISION -->
-
-        <div id="final-decision">
-
-            <h3>🚦 Final Decision</h3>
-
-            <p>
-                Should this transaction be accepted?
-            </p>
-
-
-            <button id="approve">
-
-                ✅ APPROVE
-
-            </button>
-
-
-            <button id="reject">
-
-                ❌ REJECT
-
-            </button>
-
-        </div>
-
-
-
-        <!-- VALIDATION REPORT -->
-
-        <div id="validation-report">
-
-        </div>
-
-    </div>
+    </main>
 
 
     <script src="game.js"></script>
