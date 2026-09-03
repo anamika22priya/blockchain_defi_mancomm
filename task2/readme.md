@@ -2,6 +2,7 @@
 
 # GWEI TOLL MANAGER: Build. Validate. Survive the congestion
 
+
 ## Progression: 
 0. The validator starts with:
  🚧 1 Toll Booth
@@ -58,6 +59,7 @@
  - Customise Validator: 
     Hats, Backpack, Glasses etc. 
  
+
 ## Blockchain concepts used: 
 Transaction validation
 Digital signatures
@@ -89,3 +91,10 @@ version of the game based on the specification.
 The generated version was provided as a standalone HTML file and was included
 in the project as an experimental prototype. It gives the entire game implementation. 
 
+## 🎮 Play the Game
+
+**Main Game:**  
+[Play GWEI TOLL MANAGER →](https://gwei-toll-manager.vercel.app/)
+
+**AI-Assisted Prototype:**  
+[Play the Claude-Generated Prototype →](https://gwei-toll-manager.vercel.app/ai-prototype/)
