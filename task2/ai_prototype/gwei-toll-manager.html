@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GWEI TOLL MANAGER</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root{
+  --asphalt:#0a0e13;
+  --panel:#121922;
+  --panel-2:#182230;
+  --line:#26333f;
+  --amber:#ffb627;
+  --amber-dim:#7a5f1e;
+  --eth:#19e3a4;
+  --danger:#ff4d4d;
+  --warn:#ff9a3d;
+  --ink:#eaf2f5;
+  --muted:#7f95a3;
+  --stripe:#e8e4d8;
+  --disp: 'Bebas Neue', 'Space Grotesk', sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+  --body: 'Space Grotesk', sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--asphalt);color:var(--ink);font-family:var(--body);}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(255,182,39,0.07), transparent 55%),
+    repeating-linear-gradient(180deg, #0d1218 0px, #0d1218 2px, #0a0e13 2px, #0a0e13 4px),
+    var(--asphalt);
+}
+#app{max-width:1180px;margin:0 auto;padding:14px 14px 40px;}
+h1,h2,h3{font-family:var(--disp);letter-spacing:0.03em;margin:0;}
+.hidden{display:none !important;}
+button{font-family:var(--body);cursor:pointer;border:none;}
+::selection{background:var(--amber);color:#161616;}
+
+/* ---------- START SCREEN ---------- */
+#screen-start{text-align:center;padding:60px 12px 30px;}
+.logo-badge{
+  display:inline-block;padding:5px 16px;border:1px solid var(--amber-dim);
+  color:var(--amber);font-family:var(--mono);font-size:11px;letter-spacing:0.25em;
+  border-radius:2px;margin-bottom:18px;background:rgba(255,182,39,0.06);
+}
+.title-main{font-size:clamp(46px,9vw,88px);color:var(--ink);line-height:0.9;}
+.title-main span{color:var(--amber);}
+.title-sub{font-family:var(--mono);color:var(--muted);font-size:14px;margin-top:10px;letter-spacing:0.05em;}
+.start-flavor{max-width:520px;margin:26px auto 34px;color:var(--muted);font-size:14.5px;line-height:1.6;}
+.cta-btn{
+  font-family:var(--disp);font-size:26px;letter-spacing:0.04em;
+  background:var(--amber);color:#141414;padding:14px 46px;border-radius:4px;
+  box-shadow:0 4px 0 #a3771a, 0 8px 18px rgba(0,0,0,0.4);
+  transition:transform .08s ease;
+}
+.cta-btn:active{transform:translateY(4px);box-shadow:0 0 0 #a3771a;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:720px;margin:36px auto 0;}
+.rule-chip{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px 10px;}
+.rule-chip .n{font-family:var(--mono);color:var(--amber);font-size:11px;letter-spacing:0.1em;}
+.rule-chip .t{font-size:13px;color:var(--ink);margin-top:6px;}
+
+/* ---------- HUD ---------- */
+.hud{
+  display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;
+}
+.hud-item{flex:1;min-width:110px;display:flex;flex-direction:column;justify-content:center;padding:4px 10px;border-right:1px dashed var(--line);}
+.hud-item:last-child{border-right:none;}
+.hud-label{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.12em;}
+.hud-value{font-family:var(--disp);font-size:24px;letter-spacing:0.02em;}
+.hud-value.eth{color:var(--eth);}
+.hud-value.rep{color:var(--amber);}
+.rep-bar{height:5px;background:#232d38;border-radius:3px;overflow:hidden;margin-top:5px;}
+.rep-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--danger),var(--warn),var(--eth));}
+.avatar-mini{width:38px;height:38px;border-radius:50%;background:#1c2733;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:19px;position:relative;}
+
+/* ---------- PLAYABLE CHARACTER (persistent floating companion) ---------- */
+.floating-companion{
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:40;
+  display:flex;flex-direction:column;align-items:center;
+  pointer-events:none;
+}
+.companion-bubble{
+  pointer-events:none;
+  max-width:170px;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:8px 11px;font-family:var(--mono);font-size:11.5px;color:var(--ink);line-height:1.4;
+  margin-bottom:10px;position:relative;box-shadow:0 6px 16px rgba(0,0,0,0.4);
+  opacity:0;transform:translateY(6px);transition:opacity .35s ease, transform .35s ease;
+}
+.companion-bubble.show{opacity:1;transform:translateY(0);}
+.companion-bubble::after{
+  content:"";position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
+  border-width:7px 7px 0 7px;border-style:solid;border-color:var(--panel) transparent transparent transparent;
+}
+.char-name{font-family:var(--mono);font-size:10px;letter-spacing:.15em;color:var(--amber);margin-bottom:8px;
+  border:1px solid var(--amber-dim);border-radius:10px;padding:2px 10px;background:rgba(255,182,39,0.07);}
+.character{position:relative;width:100px;height:190px;animation:char-bob 2.6s ease-in-out infinite;pointer-events:auto;}
+.char-scale-wrap{transform:scale(0.85);transform-origin:top center;}
+.character.good{animation:char-cheer .7s ease;}
+.character.bad{animation:char-shake .6s ease;}
+@keyframes char-bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+@keyframes char-cheer{0%{transform:translateY(0) rotate(0);}30%{transform:translateY(-12px) rotate(-4deg);}60%{transform:translateY(-10px) rotate(4deg);}100%{transform:translateY(0) rotate(0);}}
+@keyframes char-shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-7px) rotate(-3deg);}40%{transform:translateX(7px) rotate(3deg);}60%{transform:translateX(-5px) rotate(-2deg);}80%{transform:translateX(5px) rotate(2deg);}}
+
+.char-backpack{position:absolute;top:34px;left:50%;transform:translateX(-50%);width:70px;height:58px;
+  display:flex;align-items:center;justify-content:center;font-size:32px;z-index:1;filter:brightness(0.85);}
+.char-arm{position:absolute;top:44px;width:14px;height:52px;background:#1c2531;border-radius:7px;z-index:3;}
+.char-arm-left{left:6px;transform:rotate(-8deg);transform-origin:top center;}
+.char-arm-right{right:6px;transform:rotate(8deg);transform-origin:top center;}
+.char-torso{position:absolute;top:40px;left:50%;transform:translateX(-50%);width:64px;height:70px;
+  background:var(--amber);border-radius:14px 14px 6px 6px;z-index:4;overflow:hidden;}
+.char-stripe{position:absolute;left:0;right:0;top:14px;height:6px;background:#eef1f0;opacity:.9;}
+.char-stripe::after{content:"";position:absolute;left:0;right:0;top:16px;height:6px;background:#eef1f0;opacity:.9;}
+.char-legs{position:absolute;top:106px;left:50%;transform:translateX(-50%);width:48px;height:52px;z-index:2;}
+.char-leg{position:absolute;top:0;width:20px;height:52px;background:#232d3a;border-radius:4px;}
+.char-leg:first-child{left:0;}
+.char-leg:last-child{right:0;}
+.char-boots{position:absolute;top:156px;left:50%;transform:translateX(-50%);width:54px;height:16px;z-index:2;}
+.char-boot{position:absolute;top:0;width:24px;height:15px;background:#10151b;border-radius:4px;}
+.char-boot:first-child{left:0;}
+.char-boot:last-child{right:0;}
+.char-head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:48px;height:48px;
+  background:#e3ac74;border-radius:50%;z-index:5;border:2px solid rgba(0,0,0,0.12);}
+.char-eyes{position:absolute;top:19px;left:50%;transform:translateX(-50%);display:flex;gap:10px;
+  animation:char-blink 4.2s infinite;}
+.char-eyes span{width:5px;height:5px;border-radius:50%;background:#1d2733;display:block;}
+@keyframes char-blink{0%,92%,100%{transform:scaleY(1);}96%{transform:scaleY(0.15);}}
+.char-mouth{position:absolute;top:31px;left:50%;transform:translateX(-50%);width:14px;height:7px;
+  border-bottom:2px solid #8a5a34;border-radius:0 0 10px 10px;}
+.char-glasses{position:absolute;top:15px;left:50%;transform:translateX(-50%);font-size:22px;z-index:6;
+  line-height:1;}
+.char-hat{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:36px;z-index:7;line-height:1;}
+.char-shadow{width:60px;height:10px;border-radius:50%;background:rgba(0,0,0,0.4);filter:blur(2px);margin-top:8px;}
+
+
+/* ---------- CONGESTION SIGN ---------- */
+.sign-wrap{
+  background:#05070a;border:3px solid #1b232c;border-radius:6px;padding:12px 16px;margin-bottom:10px;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+}
+.sign-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:11px;color:#4d6472;letter-spacing:0.15em;margin-bottom:8px;}
+.sign-dots{font-family:var(--mono);font-size:11px;letter-spacing:2px;}
+.gauge-track{position:relative;height:26px;border-radius:3px;background:#0d1116;overflow:hidden;border:1px solid #202a33;}
+.gauge-fill{height:100%;width:0%;transition:width .4s ease, background .4s ease;}
+.gauge-fill.zone-green{background:repeating-linear-gradient(90deg,#0f9d63,#0f9d63 8px,#12b874 8px,#12b874 16px);}
+.gauge-fill.zone-amber{background:repeating-linear-gradient(90deg,#c98413,#c98413 8px,#e6980f 8px,#e6980f 16px);}
+.gauge-fill.zone-red{background:repeating-linear-gradient(90deg,#a02323,#a02323 8px,#d92b2b 8px,#d92b2b 16px);animation:sign-pulse 0.6s infinite alternate;}
+@keyframes sign-pulse{from{filter:brightness(1);}to{filter:brightness(1.5);}}
+.gauge-caption{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;margin-top:6px;}
+.gauge-caption .rd{font-family:var(--disp);font-size:20px;letter-spacing:.05em;}
+.gauge-caption .rd.green{color:#2be08c;}
+.gauge-caption .rd.amber{color:var(--amber);}
+.gauge-caption .rd.red{color:var(--danger);}
+
+/* ---------- PLAZA ---------- */
+.plaza{
+  position:relative;background:linear-gradient(180deg,#141b23,#0e131a);
+  border:1px solid var(--line);border-radius:8px;padding:14px 10px 10px;margin-bottom:10px;overflow:hidden;
+}
+.booths-row{display:flex;gap:10px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;}
+.booth{
+  width:64px;height:70px;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,#28323d,#1b232c);
+  border:1px solid #37444f;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;
+}
+.booth .roof{position:absolute;top:-6px;left:-4px;right:-4px;height:8px;background:var(--amber);border-radius:3px;}
+.booth .win{width:34px;height:24px;background:#0a4d5c;border:1px solid #0d6c80;border-radius:2px;}
+.booth .lbl{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:4px;}
+.booth.locked{opacity:0.35;}
+.lane{
+  position:relative;height:54px;background:repeating-linear-gradient(90deg,transparent,transparent 22px,var(--stripe) 22px,var(--stripe) 40px);
+  background-color:#20262c;border-radius:3px;margin-bottom:8px;overflow:hidden;opacity:0.9;
+}
+.lane .center-line{position:absolute;top:50%;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,#556270,#556270 14px,transparent 14px,transparent 26px);transform:translateY(-1px);}
+.car{
+  position:absolute;top:8px;font-size:26px;transition:left .35s ease;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5));
+}
+.car.active-car{font-size:32px;top:4px;}
+.queue-hint{font-family:var(--mono);font-size:10px;color:var(--muted);text-align:center;letter-spacing:.1em;}
+.auto-log{font-family:var(--mono);font-size:10.5px;color:#4f8f78;min-height:16px;text-align:center;margin-top:4px;}
+
+/* ---------- TICKET ---------- */
+.ticket-panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:0;overflow:hidden;}
+.rules-banner{background:#0d1a22;border-bottom:1px dashed var(--line);padding:10px 14px;font-family:var(--mono);font-size:11px;}
+.rules-banner .rb-title{color:var(--amber);letter-spacing:.12em;margin-bottom:6px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:5px;}
+.chip{background:#1a2733;border:1px solid #2a3b48;border-radius:12px;padding:2px 9px;font-size:10.5px;color:var(--ink);}
+.chip-lbl{color:var(--muted);font-size:10px;margin-right:4px;}
+
+.no-car{padding:50px 20px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:13px;}
+
+.ticket{padding:14px 16px 4px;position:relative;}
+.ticket-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.ticket-head .tx-type{font-family:var(--disp);font-size:22px;color:var(--ink);}
+.timer-wrap{display:flex;align-items:center;gap:6px;}
+.timer-bar{width:110px;height:8px;background:#0d1116;border-radius:4px;overflow:hidden;border:1px solid #232d38;}
+.timer-fill{height:100%;width:100%;background:var(--eth);transition:width .1s linear, background .3s ease;}
+.timer-num{font-family:var(--mono);font-size:12px;color:var(--muted);width:28px;text-align:right;}
+
+.ledger-line{display:grid;grid-template-columns:170px 1fr;gap:8px;font-family:var(--mono);font-size:13px;padding:5px 0;border-bottom:1px dotted #22303b;}
+.ledger-line .k{color:var(--muted);}
+.ledger-line .v{color:var(--ink);text-align:right;}
+.ledger-line .v.flagme{color:var(--warn);}
+
+.check-block{background:#0d151d;border:1px solid #1e2a35;border-radius:6px;margin:12px 0;padding:10px 12px;}
+.check-block h4{font-family:var(--mono);color:var(--muted);font-size:10.5px;letter-spacing:.12em;margin:0 0 6px;text-transform:uppercase;}
+.check-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12.5px;padding:3px 0;}
+.check-row .a{color:var(--ink);}
+.check-row .b{color:var(--ink);}
+
+.barrier-row{display:flex;gap:10px;padding:14px 16px 16px;}
+.barrier-btn{
+  flex:1;font-family:var(--disp);font-size:20px;letter-spacing:.05em;padding:14px 8px;border-radius:6px;
+  display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .08s ease;
+}
+.barrier-btn:active{transform:scale(0.97);}
+.barrier-btn.accept{background:var(--eth);color:#052018;box-shadow:0 4px 0 #0c8f68;}
+.barrier-btn.reject{background:var(--danger);color:#2c0505;box-shadow:0 4px 0 #9c1f1f;}
+.barrier-sub{font-family:var(--mono);font-size:9.5px;letter-spacing:0.08em;opacity:.85;}
+
+/* ---------- FEEDBACK OVERLAY ---------- */
+.feedback-overlay{
+  position:fixed;inset:0;background:rgba(6,9,12,0.82);display:flex;align-items:center;justify-content:center;
+  z-index:50;padding:16px;
+}
+.feedback-card{max-width:460px;width:100%;background:var(--panel);border-radius:10px;padding:26px 24px;text-align:center;border:1px solid var(--line);}
+.feedback-card.correct{border-color:var(--eth);box-shadow:0 0 30px rgba(25,227,164,0.15);}
+.feedback-card.wrong{border-color:var(--danger);box-shadow:0 0 30px rgba(255,77,77,0.15);}
+.feedback-icon{font-size:44px;}
+.feedback-title{font-family:var(--disp);font-size:30px;margin:6px 0;}
+.feedback-title.correct{color:var(--eth);}
+.feedback-title.wrong{color:var(--danger);}
+.feedback-body{font-family:var(--mono);font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.feedback-delta{font-family:var(--mono);font-size:14px;margin-bottom:10px;}
+.feedback-delta span{margin:0 8px;}
+
+/* ---------- SHOP ---------- */
+#screen-shop{padding:10px 4px;}
+.shop-header{text-align:center;margin-bottom:20px;}
+.wallet-banner{
+  position:sticky;top:0;z-index:10;display:flex;justify-content:center;align-items:baseline;gap:12px;
+  background:linear-gradient(180deg,#182230,#121922);border:1px solid var(--line);border-radius:8px;
+  padding:12px 16px;margin-bottom:18px;box-shadow:0 4px 14px rgba(0,0,0,0.35);
+}
+.wb-label{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.12em;}
+.wb-value{font-family:var(--disp);font-size:28px;color:var(--eth);letter-spacing:.03em;}
+.shop-header h2{font-size:38px;color:var(--amber);}
+.shop-header p{font-family:var(--mono);color:var(--muted);font-size:12.5px;margin-top:6px;}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:22px;}
+.shop-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px;}
+.shop-card .sc-icon{font-size:28px;}
+.shop-card h3{font-size:19px;color:var(--ink);}
+.shop-card .sc-desc{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.5;flex-grow:1;}
+.shop-card .sc-stat{font-family:var(--mono);font-size:11px;color:var(--eth);}
+.buy-btn{background:var(--amber);color:#141414;font-family:var(--mono);font-weight:700;font-size:12.5px;padding:9px;border-radius:5px;letter-spacing:.03em;}
+.buy-btn:disabled{background:#2a3038;color:var(--muted);cursor:not-allowed;}
+.buy-btn.owned{background:#1c2b26;color:var(--eth);}
+.cosmetic-row{display:flex;gap:8px;flex-wrap:wrap;}
+.cosmetic-opt{background:#0d151d;border:1px solid #223040;border-radius:6px;padding:8px;text-align:center;flex:1;min-width:70px;font-size:22px;position:relative;}
+.cosmetic-opt.equipped{border-color:var(--amber);background:rgba(255,182,39,0.08);}
+.cosmetic-opt.unaffordable{opacity:0.4;filter:grayscale(0.6);}
+.cosmetic-opt .cprice{display:block;font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px;}
+.continue-btn{display:block;margin:0 auto;font-family:var(--disp);font-size:24px;background:var(--eth);color:#052018;padding:12px 40px;border-radius:5px;box-shadow:0 4px 0 #0c8f68;}
+
+/* ---------- REPORT ---------- */
+#screen-report{text-align:center;padding:40px 12px;}
+.report-icon{font-size:56px;}
+.report-title{font-family:var(--disp);font-size:40px;color:var(--danger);margin:8px 0 4px;}
+.report-sub{font-family:var(--mono);color:var(--muted);font-size:13px;margin-bottom:26px;}
+.report-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;max-width:560px;margin:0 auto 30px;}
+.rstat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 8px;}
+.rstat .rv{font-family:var(--disp);font-size:26px;color:var(--amber);}
+.rstat .rl{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em;}
+
+/* ---------- LEVEL COMPLETE ---------- */
+.lvlcomplete-banner{text-align:center;padding:20px 12px 8px;}
+.lvlcomplete-banner h2{font-size:34px;color:var(--eth);}
+.lvlcomplete-banner p{font-family:var(--mono);color:var(--muted);font-size:12.5px;}
+
+@media (min-width:760px){
+  .game-columns{display:grid;grid-template-columns:1fr 1.15fr;gap:10px;align-items:start;}
+}
+@media (max-width:759px){
+  .floating-companion{
+    right:8px;top:auto;bottom:8px;transform:none;
+  }
+  .floating-companion .char-scale-wrap{transform:scale(0.62);}
+  .floating-companion .char-name{display:none;}
+  .floating-companion .companion-bubble{max-width:120px;font-size:10.5px;padding:6px 8px;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- START SCREEN -->
+  <div id="screen-start">
+    <div class="logo-badge">◈ VALIDATOR TRAINING SIMULATOR ◈</div>
+    <div class="title-main">GWEI TOLL<br><span>MANAGER</span></div>
+    <div class="title-sub">BUILD &nbsp;·&nbsp; VALIDATE &nbsp;·&nbsp; SURVIVE THE CONGESTION</div>
+    <p class="start-flavor">You run a one-lane toll booth on the busiest chain in the game. Cars roll up carrying transactions — check the signature, check the balance, check the contract rules — then raise the barrier or slam it down. Get it wrong enough, or fall too far behind, and the network turns on you.</p>
+    <button class="cta-btn" id="btn-start">OPEN THE BOOTH</button>
+    <div class="rules-grid">
+      <div class="rule-chip"><div class="n">CHECK 1</div><div class="t">Signature vs. history</div></div>
+      <div class="rule-chip"><div class="n">CHECK 2</div><div class="t">Balance vs. cost</div></div>
+      <div class="rule-chip"><div class="n">CHECK 3</div><div class="t">Contract allow-list</div></div>
+      <div class="rule-chip"><div class="n">THE CLOCK</div><div class="t">Decide before it runs out</div></div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="hidden">
+    <div class="hud">
+      <div class="hud-item">
+        <div class="hud-label">BALANCE</div>
+        <div class="hud-value eth" id="hud-eth">1.000 ETH</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">REPUTATION</div>
+        <div class="hud-value rep" id="hud-rep">100</div>
+        <div class="rep-bar"><i id="rep-bar-fill" style="width:100%"></i></div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">LEVEL</div>
+        <div class="hud-value" id="hud-level" style="color:var(--ink)">1 — Local Lane</div>
+      </div>
+      <div class="hud-item">
+        <div class="hud-label">QUOTA</div>
+        <div class="hud-value" id="hud-quota" style="color:var(--ink);font-size:20px">0 / 8</div>
+      </div>
+      <div class="avatar-mini" id="avatar-mini" style="display:none">🧑</div>
+    </div>
+
+    <div class="sign-wrap">
+      <div class="sign-top"><span>OVERHEAD NETWORK MONITOR</span><span class="sign-dots" id="sign-dots">▪▪▪▪▪▪▪▪▪▪</span></div>
+      <div class="gauge-track"><div class="gauge-fill zone-green" id="gauge-fill" style="width:0%"></div></div>
+      <div class="gauge-caption">
+        <span style="color:var(--muted)">CONGESTION</span>
+        <span class="rd green" id="gauge-readout">0%</span>
+      </div>
+    </div>
+
+    <div class="game-columns">
+      <div class="plaza">
+        <div class="booths-row" id="booths-row"></div>
+        <div class="lane"><div class="center-line"></div><div id="car-layer"></div></div>
+        <div class="queue-hint" id="queue-hint">Queue: 0 waiting</div>
+        <div class="auto-log" id="auto-log">&nbsp;</div>
+      </div>
+
+      <div class="ticket-panel">
+        <div class="rules-banner">
+          <div class="rb-title">📜 CONTRACT RULES — THIS LEVEL</div>
+          <div class="chip-row"><span class="chip-lbl">SENDERS OK:</span><span id="chips-sender"></span></div>
+          <div class="chip-row"><span class="chip-lbl">RECEIVERS OK:</span><span id="chips-receiver"></span></div>
+          <div class="chip-row"><span class="chip-lbl">TYPES OK:</span><span id="chips-type"></span></div>
+        </div>
+        <div id="ticket-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOP SCREEN -->
+  <div id="screen-shop" class="hidden"></div>
+
+  <!-- REPORT SCREEN -->
+  <div id="screen-report" class="hidden"></div>
+
+  <!-- FEEDBACK OVERLAY (injected dynamically) -->
+
+  <!-- PERSISTENT FLOATING COMPANION -->
+  <div class="floating-companion" id="floating-companion">
+    <div class="companion-bubble show" id="companion-bubble">Ready when you are.</div>
+    <div class="char-name">YOU</div>
+    <div class="char-scale-wrap">
+      <div class="character" id="character">
+        <div class="char-backpack" id="char-backpack"></div>
+        <div class="char-arm char-arm-left"></div>
+        <div class="char-arm char-arm-right"></div>
+        <div class="char-torso"><div class="char-stripe"></div></div>
+        <div class="char-legs"><div class="char-leg"></div><div class="char-leg"></div></div>
+        <div class="char-boots"><div class="char-boot"></div><div class="char-boot"></div></div>
+        <div class="char-head">
+          <div class="char-eyes"><span></span><span></span></div>
+          <div class="char-mouth"></div>
+        </div>
+        <div class="char-glasses" id="char-glasses"></div>
+        <div class="char-hat" id="char-hat"></div>
+      </div>
+    </div>
+    <div class="char-shadow"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+
+/* ===================== DATA ===================== */
+const NAME_POOL = ['Alice','Bob','Carol','Dave','Eve','Frank','Grace','Heidi'];
+const SUSPECT_POOL = ['Mallory','Trent','Sybil','Zorak','0xGh0st'];
+const RECEIVER_EXTRA = ['DEX Pool','NFT Market','Staking Vault','Bridge Router','Unknown Vault'];
+const TX_TYPES_ALL = ['Transfer','Swap','Mint','Contract Call','Stake'];
+
+const LEVELS = [
+  { id:1, name:'Local Lane', quota:8, timeLimit:36, arrival:7500, maxQueue:5, congestionArrival:4, congestionTimeout:10, congestionDecay:1.4,
+    allowedSenders:['Alice','Bob','Carol'], allowedReceivers:['Dave','Eve','DEX Pool'], allowedTypes:['Transfer','Swap'],
+    baseFeeRange:[8,32], flawChance:0.45, doubleFlawChance:0 },
+  { id:2, name:'Rush Hour', quota:10, timeLimit:30, arrival:6400, maxQueue:6, congestionArrival:5, congestionTimeout:12, congestionDecay:1.3,
+    allowedSenders:['Alice','Bob','Carol','Dave'], allowedReceivers:['Eve','Frank','DEX Pool','Staking Vault'], allowedTypes:['Transfer','Swap','Stake'],
+    baseFeeRange:[15,48], flawChance:0.55, doubleFlawChance:0.12 },
+  { id:3, name:'Mainnet Gridlock', quota:12, timeLimit:25, arrival:5400, maxQueue:7, congestionArrival:6, congestionTimeout:14, congestionDecay:1.15,
+    allowedSenders:['Alice','Carol','Eve','Grace'], allowedReceivers:['Bob','Frank','Bridge Router','NFT Market'], allowedTypes:['Swap','Mint','Contract Call'],
+    baseFeeRange:[22,65], flawChance:0.62, doubleFlawChance:0.22 },
+  { id:4, name:'Peak Congestion', quota:14, timeLimit:20, arrival:4600, maxQueue:8, congestionArrival:7, congestionTimeout:16, congestionDecay:1.0,
+    allowedSenders:['Bob','Dave','Grace','Heidi'], allowedReceivers:['Alice','Carol','Staking Vault','Bridge Router','NFT Market'], allowedTypes:['Mint','Contract Call','Stake'],
+    baseFeeRange:[30,90], flawChance:0.68, doubleFlawChance:0.3 },
+];
+
+const SHOP_NPCS = [
+  { key:'bob', icon:'🧢', name:'Hire Bob', cost:0.05, rate:5, desc:'A steady second pair of hands. Auto-clears small transactions from the overflow lane.' },
+  { key:'alice', icon:'🥽', name:'Hire Alice', cost:0.35, rate:10, desc:'A veteran validator. Twice the throughput of Bob, for a real price.' },
+];
+
+const COSMETICS = {
+  hat: [ {id:'cap', icon:'🧢', cost:0.03}, {id:'crown', icon:'👑', cost:0.4}, {id:'hardhat', icon:'⛑️', cost:0.08} ],
+  glasses: [ {id:'shades', icon:'🕶️', cost:0.05}, {id:'monocle', icon:'🧐', cost:0.15} ],
+  backpack: [ {id:'bag', icon:'🎒', cost:0.05}, {id:'toolbelt', icon:'🛠️', cost:0.1} ],
+};
+
+const TYPE_EMOJI = { Transfer:'🚗', Swap:'🚙', Mint:'🚓', 'Contract Call':'🚐', Stake:'🚕' };
+
+/* ===================== STATE ===================== */
+let state = null;
+function freshState(){
+  return {
+    screen:'start',
+    eth:1.000, reputation:100,
+    boothsUnlocked:0, npcs:{bob:false, alice:false},
+    cosmetics:{hat:null, glasses:null, backpack:null},
+    ownedCosmetics:new Set(),
+    levelIndex:0, manualCorrect:0,
+    queue:[], activeCar:null, nextCarId:1,
+    congestion:0, autoAccumMs:0, arrivalAccumMs:0,
+    checkpoint:null,
+    stats:{processed:0, correct:0, wrong:0, timeouts:0, ethEarnedTotal:0},
+    masterInterval:null, timerInterval:null,
+    autoLogTimeout:null,
+  };
+}
+state = freshState();
+
+function rand(a,b){ return a + Math.random()*(b-a); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+function clamp(v,lo,hi){ return Math.max(lo,Math.min(hi,v)); }
+function fmt(n,d=3){ return Number(n).toFixed(d); }
+
+/* ===================== COMPANION SPEECH BUBBLE ===================== */
+let companionTimeout = null;
+function setCompanionMessage(text, holdMs){
+  const bubble = document.getElementById('companion-bubble');
+  if(!bubble) return;
+  bubble.textContent = text;
+  bubble.classList.add('show');
+  clearTimeout(companionTimeout);
+  if(holdMs){
+    companionTimeout = setTimeout(()=>{ bubble.classList.remove('show'); }, holdMs);
+  }
+}
+const CORRECT_LINES = ["Nice catch!","Clean call.","That's the job.","Good eye on that one.","Ledger stays clean."];
+const WRONG_LINES = ["Ouch — check the panel next time.","That one slipped past us.","Read the checks closer.","Rough one — shake it off."];
+const TIMEOUT_LINES = ["Too slow — they drove off!","Cars are piling up!","Pick up the pace a little."];
+
+function automationRate(){
+  let r = 0;
+  if(state.npcs.bob) r += 5;
+  if(state.npcs.alice) r += 10;
+  r += state.boothsUnlocked*15;
+  return r;
+}
+function boothCost(){ return +(5 + state.boothsUnlocked*4.5).toFixed(2); }
+
+/* ===================== NAV ===================== */
+const screens = ['start','game','shop','report'];
+function showScreen(name){
+  state.screen = name;
+  screens.forEach(s=>{
+    document.getElementById('screen-'+s).classList.toggle('hidden', s!==name);
+  });
+}
+
+document.getElementById('btn-start').addEventListener('click', ()=>{
+  state = freshState();
+  startLevel(0, true);
+  setCompanionMessage("Let's open the booth. I've got your back.", 4000);
+});
+
+/* ===================== LEVEL LIFECYCLE ===================== */
+function snapshotCheckpoint(){
+  state.checkpoint = {
+    eth:state.eth, reputation:100, // reputation always resets to full at a fresh level attempt
+    boothsUnlocked:state.boothsUnlocked,
+    npcs:{...state.npcs},
+    cosmetics:{...state.cosmetics},
+    ownedCosmetics:new Set(state.ownedCosmetics),
+    levelIndex:state.levelIndex,
+  };
+}
+
+function startLevel(idx, isNewGame){
+  state.levelIndex = idx;
+  state.manualCorrect = 0;
+  state.queue = [];
+  state.activeCar = null;
+  state.congestion = 0;
+  state.autoAccumMs = 0;
+  state.arrivalAccumMs = 0;
+  state.stats = {processed:0, correct:0, wrong:0, timeouts:0, ethEarnedTotal:0};
+  if(isNewGame){ state.reputation = 100; }
+  snapshotCheckpoint();
+  showScreen('game');
+  renderRulesBanner();
+  renderBooths();
+  updateHud();
+  clearInterval(state.masterInterval);
+  state.masterInterval = setInterval(masterTick, 500);
+  pullNextCarIfNeeded();
+  renderTicket();
+  if(!isNewGame){
+    setCompanionMessage("New level: "+LEVELS[idx].name+". Watch the rules banner!", 4200);
+  }
+}
+
+function revertToCheckpoint(reasonKey){
+  const cp = state.checkpoint;
+  state.eth = cp.eth;
+  state.reputation = 100;
+  state.boothsUnlocked = cp.boothsUnlocked;
+  state.npcs = {...cp.npcs};
+  state.cosmetics = {...cp.cosmetics};
+  state.ownedCosmetics = new Set(cp.ownedCosmetics);
+  clearInterval(state.masterInterval);
+  clearInterval(state.timerInterval);
+  renderReport(reasonKey);
+}
+
+/* ===================== MASTER TICK ===================== */
+function masterTick(){
+  const level = LEVELS[state.levelIndex];
+
+  // arrivals
+  state.arrivalAccumMs += 500;
+  if(state.arrivalAccumMs >= level.arrival){
+    state.arrivalAccumMs = 0;
+    if(state.queue.length < level.maxQueue){
+      state.queue.push(generateCar(level));
+    } else {
+      state.congestion = clamp(state.congestion + level.congestionArrival*0.6, 0, 100);
+    }
+  }
+
+  // congestion natural pressure from queue length + decay
+  const comfortable = Math.max(1, level.maxQueue - 2);
+  if(state.queue.length > comfortable){
+    state.congestion = clamp(state.congestion + level.congestionArrival*0.35, 0, 100);
+  }
+  state.congestion = clamp(state.congestion - level.congestionDecay*0.5, 0, 100);
+
+  // automation
+  const rate = automationRate();
+  if(rate > 0){
+    state.autoAccumMs += 500;
+    const threshold = 60000/rate;
+    if(state.autoAccumMs >= threshold){
+      state.autoAccumMs -= threshold;
+      autoResolveOne();
+    }
+  }
+
+  pullNextCarIfNeeded();
+  renderHud();
+  renderPlaza();
+
+  if(state.congestion >= 100){
+    revertToCheckpoint('congestion');
+    return;
+  }
+  if(state.reputation <= 0){
+    revertToCheckpoint('reputation');
+    return;
+  }
+}
+
+function autoResolveOne(){
+  const level = LEVELS[state.levelIndex];
+  const reward = +(rand(0.01, 0.05)).toFixed(3);
+  state.eth += reward;
+  state.stats.ethEarnedTotal += reward;
+  state.congestion = clamp(state.congestion - 3, 0, 100);
+  const log = document.getElementById('auto-log');
+  if(log){
+    log.textContent = `🤖 Overflow lane cleared a transaction (+${fmt(reward)} ETH)`;
+    clearTimeout(state.autoLogTimeout);
+    state.autoLogTimeout = setTimeout(()=>{ if(log) log.textContent='\u00A0'; }, 2400);
+  }
+}
+
+/* ===================== CAR GENERATION ===================== */
+function generateCar(level){
+  let sender = pick(level.allowedSenders);
+  let receiver = pick(level.allowedReceivers);
+  let type = pick(level.allowedTypes);
+  const flaws = { sig:false, balance:false, sender:false, receiver:false, type:false };
+
+  const willFlaw = Math.random() < level.flawChance;
+  if(willFlaw){
+    const numFlaws = Math.random() < level.doubleFlawChance ? 2 : 1;
+    const pool = shuffle(['sig','balance','sender','receiver','type']);
+    for(let i=0;i<numFlaws;i++){
+      const f = pool[i];
+      flaws[f] = true;
+      if(f==='sender') sender = pick(SUSPECT_POOL);
+      if(f==='receiver') receiver = pick(NAME_POOL.filter(n=>!level.allowedReceivers.includes(n)).concat(['Unknown Vault']));
+      if(f==='type') type = pick(TX_TYPES_ALL.filter(t=>!level.allowedTypes.includes(t)));
+    }
+  }
+
+  const gasRequired = Math.round(
+    type==='Contract Call' ? rand(80000,150000) :
+    type==='Swap' ? rand(50000,90000) :
+    type==='Mint' ? rand(60000,100000) :
+    type==='Stake' ? rand(45000,70000) :
+    rand(21000,25000)
+  );
+
+  const congestionFactor = 1 + state.congestion/150;
+  const baseFee = Math.round(rand(level.baseFeeRange[0], level.baseFeeRange[1]) * congestionFactor);
+  const priorityFee = Math.round(rand(1,20));
+  const amount = +rand(0.02,1.5).toFixed(3);
+  const gasCostETH = +(gasRequired*(baseFee+priorityFee)*1e-9).toFixed(5);
+
+  let senderBalance = +(amount + gasCostETH + rand(0.01,0.5)).toFixed(3);
+  if(flaws.balance){
+    const shortfall = rand(0.001, Math.max(0.002, amount+gasCostETH-0.001));
+    senderBalance = +Math.max(0.001, amount+gasCostETH-shortfall).toFixed(3);
+  }
+
+  let sigHistoryAmount = amount;
+  if(flaws.sig){
+    const delta = rand(0.08,0.6) * (Math.random()<0.5?1:-1);
+    sigHistoryAmount = +Math.max(0.01, amount+delta).toFixed(3);
+  }
+
+  const valid = !flaws.sig && !flaws.balance && !flaws.sender && !flaws.receiver && !flaws.type;
+  const reward = +Math.max(0.01, gasRequired*priorityFee*1e-9*2200).toFixed(3);
+
+  return {
+    id: state.nextCarId++, sender, receiver, type, amount, gasRequired, baseFee, priorityFee,
+    senderBalance, sigHistoryAmount, gasCostETH, flaws, valid, reward,
+    timeLeft: level.timeLimit, timeLimit: level.timeLimit,
+  };
+}
+
+function pullNextCarIfNeeded(){
+  if(!state.activeCar && state.queue.length > 0){
+    state.activeCar = state.queue.shift();
+    startCarTimer();
+    renderTicket();
+    renderPlaza();
+  } else if(!state.activeCar){
+    renderTicket();
+  }
+}
+
+function startCarTimer(){
+  clearInterval(state.timerInterval);
+  state.timerInterval = setInterval(()=>{
+    if(!state.activeCar) return;
+    state.activeCar.timeLeft -= 0.1;
+    if(state.activeCar.timeLeft <= 0){
+      state.activeCar.timeLeft = 0;
+      clearInterval(state.timerInterval);
+      handleTimeout();
+    } else {
+      updateTimerBarOnly();
+    }
+  }, 100);
+}
+
+function updateTimerBarOnly(){
+  const car = state.activeCar;
+  if(!car) return;
+  const frac = car.timeLeft / car.timeLimit;
+  const fill = document.getElementById('timer-fill-el');
+  const num = document.getElementById('timer-num-el');
+  if(fill){
+    fill.style.width = (frac*100)+'%';
+    fill.style.background = frac>0.5 ? 'var(--eth)' : frac>0.22 ? 'var(--warn)' : 'var(--danger)';
+  }
+  if(num) num.textContent = car.timeLeft.toFixed(1)+'s';
+}
+
+/* ===================== DECISIONS ===================== */
+function handleTimeout(){
+  const level = LEVELS[state.levelIndex];
+  const car = state.activeCar;
+  state.stats.timeouts++;
+  state.stats.processed++;
+  state.reputation = clamp(state.reputation - 4, 0, 100);
+  state.congestion = clamp(state.congestion + level.congestionTimeout, 0, 100);
+  showFeedback({
+    correct:false, timeout:true,
+    title:'TOO SLOW!', icon:'🚨',
+    body:`The car behind ${car.sender} honked and drove off before you could decide. Angry customers raise congestion.`,
+    ethDelta:0, repDelta:-4,
+  });
+}
+
+function handleDecision(choice){
+  const car = state.activeCar;
+  if(!car) return;
+  clearInterval(state.timerInterval);
+  const correct = (choice==='accept') === car.valid;
+  state.stats.processed++;
+
+  if(correct){
+    state.stats.correct++;
+    state.manualCorrect++;
+    state.eth += car.reward;
+    state.stats.ethEarnedTotal += car.reward;
+    state.reputation = clamp(state.reputation + 2, 0, 100);
+    state.congestion = clamp(state.congestion - 4, 0, 100);
+    showFeedback({
+      correct:true, title: choice==='accept' ? 'BARRIER UP — ACCEPTED' : 'BARRIER DOWN — REJECTED',
+      icon: choice==='accept' ? '✅' : '🛑',
+      body: car.valid
+        ? 'Every check lined up — signature, balance, and contract rules. Clean validation.'
+        : explainFlaws(car),
+      ethDelta: car.reward, repDelta: 2,
+    });
+  } else {
+    state.stats.wrong++;
+    state.reputation = clamp(state.reputation - 8, 0, 100);
+    state.congestion = clamp(state.congestion - 1, 0, 100);
+    showFeedback({
+      correct:false, title: choice==='accept' ? 'BAD ACCEPT' : 'BAD REJECT',
+      icon:'⚠️',
+      body: explainFlaws(car),
+      ethDelta:0, repDelta:-8,
+    });
+  }
+}
+
+function explainFlaws(car){
+  if(car.valid){
+    return 'This transaction was fully valid — signature matched, balance was sufficient, and it followed every contract rule. Turning it away cost real revenue.';
+  }
+  const parts = [];
+  if(car.flaws.sig) parts.push(`Signature mismatch: ${car.sender}'s signature history shows ${fmt(car.sigHistoryAmount)} ETH, but this transaction claims ${fmt(car.amount)} ETH.`);
+  if(car.flaws.balance) parts.push(`Insufficient balance: ${car.sender} holds ${fmt(car.senderBalance)} ETH, but needs ${fmt(car.amount+car.gasCostETH,5)} ETH (amount + gas).`);
+  if(car.flaws.sender) parts.push(`${car.sender} is not on this contract's allowed senders list.`);
+  if(car.flaws.receiver) parts.push(`${car.receiver} is not on this contract's allowed receivers list.`);
+  if(car.flaws.type) parts.push(`"${car.type}" is not an allowed transaction type here.`);
+  return parts.join(' ');
+}
+
+function showFeedback(opts){
+  const charEl = document.getElementById('character');
+  if(charEl){
+    charEl.classList.remove('good','bad');
+    void charEl.offsetWidth;
+    charEl.classList.add(opts.correct ? 'good' : 'bad');
+    const lines = opts.timeout ? TIMEOUT_LINES : (opts.correct ? CORRECT_LINES : WRONG_LINES);
+    setCompanionMessage(lines[Math.floor(Math.random()*lines.length)], 2600);
+    setTimeout(()=>{ charEl.classList.remove('good','bad'); }, 750);
+  }
+  const overlay = document.createElement('div');
+  overlay.className = 'feedback-overlay';
+  overlay.innerHTML = `
+    <div class="feedback-card ${opts.correct?'correct':'wrong'}">
+      <div class="feedback-icon">${opts.icon}</div>
+      <div class="feedback-title ${opts.correct?'correct':'wrong'}">${opts.title}</div>
+      <div class="feedback-body">${opts.body}</div>
+      <div class="feedback-delta">
+        <span style="color:var(--eth)">${opts.ethDelta>0?'+'+fmt(opts.ethDelta)+' ETH':'+0.000 ETH'}</span>
+        <span style="color:${opts.repDelta>=0?'var(--amber)':'var(--danger)'}">${opts.repDelta>=0?'+':''}${opts.repDelta} REP</span>
+      </div>
+      <button class="cta-btn" id="btn-feedback-continue" style="font-size:18px;padding:10px 30px;margin-top:6px;">CONTINUE →</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('btn-feedback-continue').addEventListener('click', ()=>{
+    overlay.remove();
+    state.activeCar = null;
+    proceedAfterResolution();
+  });
+}
+
+function proceedAfterResolution(){
+  updateHud();
+  if(state.reputation <= 0){
+    revertToCheckpoint('reputation');
+    return;
+  }
+  const level = LEVELS[state.levelIndex];
+  if(state.manualCorrect >= level.quota){
+    clearInterval(state.masterInterval);
+    clearInterval(state.timerInterval);
+    renderLevelComplete();
+    return;
+  }
+  pullNextCarIfNeeded();
+}
+
+/* ===================== RENDER: GAME ===================== */
+function updateHud(){ renderHud(); }
+
+function renderHud(){
+  document.getElementById('hud-eth').textContent = fmt(state.eth)+' ETH';
+  document.getElementById('hud-rep').textContent = Math.round(state.reputation);
+  document.getElementById('rep-bar-fill').style.width = clamp(state.reputation,0,100)+'%';
+  const level = LEVELS[state.levelIndex];
+  document.getElementById('hud-level').textContent = (state.levelIndex+1)+' — '+level.name;
+  document.getElementById('hud-quota').textContent = state.manualCorrect+' / '+level.quota;
+  renderAvatar();
+
+  const g = clamp(state.congestion,0,100);
+  const fill = document.getElementById('gauge-fill');
+  const readout = document.getElementById('gauge-readout');
+  const dots = document.getElementById('sign-dots');
+  fill.style.width = g+'%';
+  fill.className = 'gauge-fill ' + (g<40?'zone-green':g<75?'zone-amber':'zone-red');
+  readout.className = 'rd ' + (g<40?'green':g<75?'amber':'red');
+  readout.textContent = Math.round(g)+'%';
+  const litCount = Math.round(g/10);
+  dots.textContent = '▪'.repeat(10-litCount) + '▮'.repeat(litCount);
+  dots.style.color = g<40?'#2be08c':g<75?'var(--amber)':'var(--danger)';
+
+  document.getElementById('queue-hint').textContent = 'Queue: '+state.queue.length+' waiting'+(automationRate()>0?'  ·  Overflow lane: '+automationRate()+' tx/min':'');
+}
+
+function renderAvatar(){
+  const hatEl = document.getElementById('char-hat');
+  const glassesEl = document.getElementById('char-glasses');
+  const packEl = document.getElementById('char-backpack');
+  const hat = COSMETICS.hat.find(h=>h.id===state.cosmetics.hat);
+  const glasses = COSMETICS.glasses.find(g=>g.id===state.cosmetics.glasses);
+  const pack = COSMETICS.backpack.find(p=>p.id===state.cosmetics.backpack);
+  if(hatEl) hatEl.textContent = hat ? hat.icon : '';
+  if(glassesEl) glassesEl.textContent = glasses ? glasses.icon : '';
+  if(packEl) packEl.textContent = pack ? pack.icon : '';
+}
+
+function renderBooths(){
+  const row = document.getElementById('booths-row');
+  const total = 1 + Math.max(state.boothsUnlocked, LEVELS.length>0?0:0);
+  const totalBooths = 1 + state.boothsUnlocked;
+  let html = '';
+  for(let i=0;i<Math.max(totalBooths,1);i++){
+    html += `<div class="booth"><div class="roof"></div><div class="win"></div><div class="lbl">${i===0?'BOOTH 1 (YOU)':'BOOTH '+(i+1)}</div></div>`;
+  }
+  html += `<div class="booth locked"><div class="roof"></div><div class="win"></div><div class="lbl">LOCKED</div></div>`;
+  row.innerHTML = html;
+}
+
+function renderPlaza(){
+  const layer = document.getElementById('car-layer');
+  let html = '';
+  if(state.activeCar){
+    html += `<div class="car active-car" style="left:10px;">${TYPE_EMOJI[state.activeCar.type]||'🚗'}</div>`;
+  }
+  state.queue.slice(0,4).forEach((c,i)=>{
+    html += `<div class="car" style="left:${70 + i*58}px;">${TYPE_EMOJI[c.type]||'🚗'}</div>`;
+  });
+  layer.innerHTML = html;
+}
+
+function renderRulesBanner(){
+  const level = LEVELS[state.levelIndex];
+  document.getElementById('chips-sender').innerHTML = level.allowedSenders.map(s=>`<span class="chip">${s}</span>`).join(' ');
+  document.getElementById('chips-receiver').innerHTML = level.allowedReceivers.map(s=>`<span class="chip">${s}</span>`).join(' ');
+  document.getElementById('chips-type').innerHTML = level.allowedTypes.map(s=>`<span class="chip">${s}</span>`).join(' ');
+}
+
+function renderTicket(){
+  const body = document.getElementById('ticket-body');
+  const car = state.activeCar;
+  if(!car){
+    body.innerHTML = `<div class="no-car">Lane clear — waiting for the next car to pull up…</div>`;
+    return;
+  }
+  const frac = car.timeLeft/car.timeLimit;
+  const totalCost = car.amount + car.gasCostETH;
+  body.innerHTML = `
+    <div class="ticket">
+      <div class="ticket-head">
+        <div class="tx-type">${TYPE_EMOJI[car.type]||'🚗'} ${car.type}</div>
+        <div class="timer-wrap">
+          <div class="timer-bar"><div class="timer-fill" id="timer-fill-el" style="width:${frac*100}%; background:${frac>0.5?'var(--eth)':frac>0.22?'var(--warn)':'var(--danger)'}"></div></div>
+          <div class="timer-num" id="timer-num-el">${car.timeLeft.toFixed(1)}s</div>
+        </div>
+      </div>
+
+      <div class="ledger-line"><span class="k">Sender</span><span class="v">${car.sender}</span></div>
+      <div class="ledger-line"><span class="k">Receiver</span><span class="v">${car.receiver}</span></div>
+      <div class="ledger-line"><span class="k">Amount</span><span class="v">${fmt(car.amount)} ETH</span></div>
+      <div class="ledger-line"><span class="k">Gas Required</span><span class="v">${car.gasRequired.toLocaleString()} units</span></div>
+      <div class="ledger-line"><span class="k">Base Fee</span><span class="v">${car.baseFee} gwei</span></div>
+      <div class="ledger-line"><span class="k">Priority Fee (your tip)</span><span class="v" style="color:var(--eth)">${car.priorityFee} gwei</span></div>
+
+      <div class="check-block">
+        <h4>1 · Contract Compliance</h4>
+        <div class="check-row"><span class="a">Sender / Receiver</span><span class="b">${car.sender} → ${car.receiver}</span></div>
+        <div class="check-row"><span class="a">Type requested</span><span class="b">${car.type}</span></div>
+      </div>
+
+      <div class="check-block">
+        <h4>2 · Signature History</h4>
+        <div class="check-row"><span class="a">${car.sender} previously signed for</span><span class="b">${fmt(car.sigHistoryAmount)} ETH</span></div>
+        <div class="check-row"><span class="a">This transaction claims</span><span class="b">${fmt(car.amount)} ETH</span></div>
+      </div>
+
+      <div class="check-block">
+        <h4>3 · Balance Check</h4>
+        <div class="check-row"><span class="a">${car.sender}'s balance</span><span class="b">${fmt(car.senderBalance)} ETH</span></div>
+        <div class="check-row"><span class="a">Amount + gas cost required</span><span class="b">${fmt(totalCost,5)} ETH</span></div>
+      </div>
+    </div>
+    <div class="barrier-row">
+      <button class="barrier-btn accept" id="btn-accept">▲ ACCEPT<span class="barrier-sub">raise the barrier</span></button>
+      <button class="barrier-btn reject" id="btn-reject">▼ REJECT<span class="barrier-sub">block the car</span></button>
+    </div>
+  `;
+  document.getElementById('btn-accept').addEventListener('click', ()=>handleDecision('accept'));
+  document.getElementById('btn-reject').addEventListener('click', ()=>handleDecision('reject'));
+}
+
+/* ===================== LEVEL COMPLETE / SHOP ===================== */
+function renderLevelComplete(){
+  snapshotCheckpoint();
+  const level = LEVELS[state.levelIndex];
+  const container = document.getElementById('screen-shop');
+  showScreen('shop');
+  const isLastLevel = state.levelIndex >= LEVELS.length-1;
+  container.innerHTML = `
+    <div class="lvlcomplete-banner">
+      <h2>✅ LEVEL ${state.levelIndex+1} CLEAR — ${level.name.toUpperCase()}</h2>
+      <p>Processed ${state.stats.processed} cars · ${state.stats.correct} correct · ${state.stats.timeouts} too slow · earned ${fmt(state.stats.ethEarnedTotal)} ETH</p>
+    </div>
+  ` + shopMarkup();
+  wireShopEvents(()=>{
+    if(isLastLevel){
+      renderRunComplete();
+    } else {
+      startLevel(state.levelIndex+1, false);
+    }
+  });
+  setCompanionMessage("Level clear! Got ETH to spend — want to hire some help?", 4200);
+}
+
+function shopMarkup(){
+  const bCost = boothCost();
+  return `
+    <div class="wallet-banner">
+      <span class="wb-label">💰 YOUR BALANCE</span>
+      <span class="wb-value">${fmt(state.eth)} ETH</span>
+    </div>
+    <div class="shop-header">
+      <h2>🛠️ VALIDATOR SHOP</h2>
+      <p>Spend ETH between shifts. Every purchase is permanent for the rest of the run.</p>
+    </div>
+    <div class="shop-grid">
+      ${SHOP_NPCS.map(n=>{
+        const affordable = state.eth >= n.cost;
+        const owned = state.npcs[n.key];
+        return `
+        <div class="shop-card">
+          <div class="sc-icon">${n.icon}</div>
+          <h3>${n.name}</h3>
+          <div class="sc-desc">${n.desc}</div>
+          <div class="sc-stat">+${n.rate} tx/min throughput</div>
+          <button class="buy-btn ${owned?'owned':''}" data-npc="${n.key}" ${(owned||!affordable)?'disabled':''}>
+            ${owned ? '✔ HIRED' : (affordable ? 'HIRE — '+fmt(n.cost,2)+' ETH' : 'NEED '+fmt(n.cost,2)+' ETH')}
+          </button>
+        </div>`;
+      }).join('')}
+      <div class="shop-card">
+        <div class="sc-icon">🚧</div>
+        <h3>Unlock Toll Booth</h3>
+        <div class="sc-desc">Open a new lane. Adds a permanent overflow booth that clears traffic on its own.</div>
+        <div class="sc-stat">+15 tx/min throughput</div>
+        <button class="buy-btn" id="buy-booth" ${state.eth < bCost ? 'disabled':''}>
+          ${state.eth < bCost ? 'NEED '+fmt(bCost,2)+' ETH' : 'UNLOCK — '+fmt(bCost,2)+' ETH'}
+        </button>
+      </div>
+    </div>
+    <div class="shop-header" style="margin-bottom:10px;">
+      <h2 style="font-size:26px;">🎨 CUSTOMIZE VALIDATOR</h2>
+    </div>
+    <div class="shop-grid">
+      ${Object.keys(COSMETICS).map(slot=>`
+        <div class="shop-card">
+          <h3 style="text-transform:capitalize;">${slot}</h3>
+          <div class="cosmetic-row">
+            ${COSMETICS[slot].map(opt=>{
+              const owned = state.ownedCosmetics.has(slot+':'+opt.id);
+              const equipped = state.cosmetics[slot]===opt.id;
+              const affordable = state.eth >= opt.cost;
+              return `<div class="cosmetic-opt ${equipped?'equipped':''} ${(!owned && !affordable)?'unaffordable':''}" data-slot="${slot}" data-id="${opt.id}" data-owned="${owned?1:0}">
+                ${opt.icon}<span class="cprice">${owned? (equipped?'equipped':'equip') : fmt(opt.cost,2)+' ETH'}</span>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="continue-btn" id="btn-shop-continue">CONTINUE →</button>
+  `;
+}
+
+function wireShopEvents(onContinue){
+  document.querySelectorAll('[data-npc]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.getAttribute('data-npc');
+      const npc = SHOP_NPCS.find(n=>n.key===key);
+      if(!state.npcs[key] && state.eth >= npc.cost){
+        state.eth -= npc.cost;
+        state.npcs[key] = true;
+        refreshShop(onContinue);
+      }
+    });
+  });
+  const boothBtn = document.getElementById('buy-booth');
+  if(boothBtn){
+    boothBtn.addEventListener('click', ()=>{
+      const cost = boothCost();
+      if(state.eth >= cost){
+        state.eth -= cost;
+        state.boothsUnlocked += 1;
+        refreshShop(onContinue);
+      }
+    });
+  }
+  document.querySelectorAll('.cosmetic-opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const slot = el.getAttribute('data-slot');
+      const id = el.getAttribute('data-id');
+      const owned = el.getAttribute('data-owned')==='1';
+      const opt = COSMETICS[slot].find(o=>o.id===id);
+      if(!owned){
+        if(state.eth >= opt.cost){
+          state.eth -= opt.cost;
+          state.ownedCosmetics.add(slot+':'+id);
+          state.cosmetics[slot] = id;
+        }
+      } else {
+        state.cosmetics[slot] = state.cosmetics[slot]===id ? null : id;
+      }
+      refreshShop(onContinue);
+    });
+  }); 
+  document.getElementById('btn-shop-continue').addEventListener('click', onContinue);
+}
+
+function refreshShop(onContinue){
+  const container = document.getElementById('screen-shop');
+  const banner = container.querySelector('.lvlcomplete-banner');
+  container.innerHTML = (banner? banner.outerHTML : '') + shopMarkup();
+  wireShopEvents(onContinue);
+}
+
+/* ===================== REPORT SCREENS ===================== */
+function renderReport(reasonKey){
+  showScreen('report');
+  const container = document.getElementById('screen-report');
+  const level = LEVELS[state.levelIndex];
+  const reasons = {
+    congestion: { icon:'🚨', title:'NETWORK CONGESTION OVERLOAD', sub:'Base fees blew past the red line. The whole plaza jammed up and the level was scrapped.' },
+    reputation: { icon:'📴', title:'VALIDATOR OFFLINE', sub:'Reputation hit zero. The network revoked your validating rights for this level.' },
+  };
+  const r = reasons[reasonKey] || reasons.congestion;
+  container.innerHTML = `
+    <div class="report-icon">${r.icon}</div>
+    <div class="report-title">${r.title}</div>
+    <div class="report-sub">${r.sub}<br>All ETH and reputation earned this level attempt were lost — you'll retry ${level.name} from a clean slate.</div>
+    <div class="report-stats">
+      <div class="rstat"><div class="rv">${state.stats.processed}</div><div class="rl">CARS PROCESSED</div></div>
+      <div class="rstat"><div class="rv">${state.stats.correct}</div><div class="rl">CORRECT CALLS</div></div>
+      <div class="rstat"><div class="rv">${state.stats.wrong}</div><div class="rl">WRONG CALLS</div></div>
+      <div class="rstat"><div class="rv">${state.stats.timeouts}</div><div class="rl">TOO SLOW</div></div>
+    </div>
+    <button class="cta-btn" id="btn-retry">RETRY ${level.name.toUpperCase()}</button>
+  `;
+  document.getElementById('btn-retry').addEventListener('click', ()=>{
+    startLevel(state.levelIndex, false);
+  });
+  setCompanionMessage("Rough shift... let's regroup and try again.", 5000);
+}
+
+function renderRunComplete(){
+  showScreen('report');
+  const container = document.getElementById('screen-report');
+  container.innerHTML = `
+    <div class="report-icon">🏁</div>
+    <div class="report-title" style="color:var(--eth)">ALL LANES CLEARED</div>
+    <div class="report-sub">You validated your way through every level in the plaza. Final standing:</div>
+    <div class="report-stats">
+      <div class="rstat"><div class="rv" style="color:var(--eth)">${fmt(state.eth)}</div><div class="rl">ETH BALANCE</div></div>
+      <div class="rstat"><div class="rv">${Math.round(state.reputation)}</div><div class="rl">REPUTATION</div></div>
+      <div class="rstat"><div class="rv">${1+state.boothsUnlocked}</div><div class="rl">BOOTHS RUN</div></div>
+      <div class="rstat"><div class="rv">${automationRate()}</div><div class="rl">TX/MIN AUTOMATED</div></div>
+    </div>
+    <button class="cta-btn" id="btn-restart">RUN IT AGAIN</button>
+  `;
+  document.getElementById('btn-restart').addEventListener('click', ()=>{
+    state = freshState();
+    showScreen('start');
+  });
+  setCompanionMessage("You cleared every lane! Nicely done.", 6000);
+}
+
+})();
+</script>
+</body>
+</html>

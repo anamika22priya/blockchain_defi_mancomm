@@ -80,3 +80,12 @@ The following features are currently in development:
 - **Character animations and NPCs** are yet to be added.
 - A **level-selection/menu page** is yet to be implemented.
  
+## AI assissted game prototype: 
+
+As an additional experimentation exercise, I provided my game implementation
+plan and game logic to **Claude** and asked it to generate a complete playable
+version of the game based on the specification.
+
+The generated version was provided as a standalone HTML file and was included
+in the project as an experimental prototype.
+
