@@ -58,3 +58,25 @@
  - Customise Validator: 
     Hats, Backpack, Glasses etc. 
  
+## Blockchain concepts used: 
+Transaction validation
+Digital signatures
+Account balances
+Gas requirements
+Gas fees
+Base fees
+Priority fees
+Smart contract rules
+Validator incentives
+Network congestion
+Validator reputation
+
+## Development Notes
+
+The following features are currently in development:
+
+- Only **one level** is currently deployed.
+- **Base fee fluctuation based on network congestion** needs to be implemented.
+- **Character animations and NPCs** are yet to be added.
+- A **level-selection/menu page** is yet to be implemented.
+ 
