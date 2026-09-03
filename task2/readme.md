@@ -97,4 +97,4 @@ in the project as an experimental prototype. It gives the entire game implementa
 [Play GWEI TOLL MANAGER →](https://gwei-toll-manager.vercel.app/)
 
 **AI-Assisted Prototype:**  
-[Play the Claude-Generated Prototype →](https://gwei-toll-manager.vercel.app/ai-prototype/)
+[Play the Claude-Generated Prototype →](https://gwei-toll-manager.vercel.app/ai_prototype/)
