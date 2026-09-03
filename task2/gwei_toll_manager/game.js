@@ -436,6 +436,9 @@ function startTimer(){
             resultTitle.textContent = "TIME RAN OUT!";
             resultReasons.innerHTML = "<p>You did not process this transaction in time.</p>";
 
+            continueButton.style.display = "inline-block";
+            restartButton.style.display = "none";
+
             resultPopup.style.display = "flex";
 
             console.log("Time's UP!");
